@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: "avnadmin"
+      POSTGRES_PASSWORD: "AVNS_tuzDF8qbO8suwCDLVGD"
+      POSTGRES_DB: defaultdb
+    ports:
+      - "25280:25280"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://avnadmin:AVNS_tuzDF8qbO8suwCDLVGD@pg-3c9ceff8-organization-db.h.aivencloud.com:25280/defaultdb?sslmode=require
+    depends_on:
+      - db
+
+volumes:
+  db-data:

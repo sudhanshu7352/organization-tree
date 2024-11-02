@@ -1,0 +1,132 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Organization Tree API",
+      "version": "1.0.0",
+      "description": "API documentation for the Organization Tree project"
+    },
+    "paths": {
+      "/nodes": {
+        "post": {
+          "summary": "Create a new node",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Node"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Node created"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/nodes/{nodeId}": {
+        "put": {
+          "summary": "Update a node",
+          "parameters": [
+            {
+              "name": "nodeId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Node"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Node updated"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        },
+        "delete": {
+          "summary": "Delete a node",
+          "parameters": [
+            {
+              "name": "nodeId",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "shiftOption": {
+                      "type": "string",
+                      "enum": ["remove", "shift"]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "204": {
+              "description": "Node deleted"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      },
+      "/nodes/tree": {
+        "get": {
+          "summary": "Get the organization tree",
+          "responses": {
+            "200": {
+              "description": "Tree retrieved"
+            },
+            "400": {
+              "description": "Bad request"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Node": {
+          "type": "object",
+          "properties": {
+            "nodeName": {
+              "type": "string"
+            },
+            "nodeType": {
+              "type": "string"
+            },
+            "parentId": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+  
