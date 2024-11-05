@@ -9,4 +9,12 @@ module.exports = {
     url: process.env.DATABASE_URL,
     dialect: 'postgres',
   },
+  test: {
+    url: process.env.TEST_DATABASE_URL,
+    dialect: 'postgres',
+    // ssl: {
+    //   require: true,
+    //   rejectUnauthorized: false, // Disable SSL verification
+    // },
+  },
 };

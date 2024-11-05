@@ -20,7 +20,17 @@ module.exports = (sequelize, DataTypes) => {
       parentId: {
         type: DataTypes.UUID,
         allowNull: true,
+        references: {
+          model: 'Nodes',
+          key: 'nodeId',
+        },
       },
+    }, {
+      indexes: [
+        {
+          fields: ['parentId'],
+        },
+      ],
     });
   
     Node.associate = (models) => {

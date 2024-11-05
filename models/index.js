@@ -1,13 +1,14 @@
+require('dotenv').config();
+process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
 const fs = require('fs');
 const path = require('path');
 const { Sequelize } = require('sequelize');
 const config = require('../config/config')[process.env.NODE_ENV || 'development'];
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED='0'
+// console.log("config>>",config)
 // Load the CA certificate
 const caCert = fs.readFileSync(path.resolve(__dirname, '../ca.crt')).toString();
-// console.log("certificate",caCert);
-// Initialize Sequelize with SSL options
+
+
 const sequelize = new Sequelize(config.url, {
   dialect: 'postgres',
   dialectOptions: {
@@ -18,6 +19,15 @@ const sequelize = new Sequelize(config.url, {
     }
   },
 });
+
+sequelize.authenticate()
+  .then(() => {
+    console.log('Database connection established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 const Node = require('./node')(sequelize, Sequelize.DataTypes);
 
 const db = {

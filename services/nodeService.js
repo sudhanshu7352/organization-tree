@@ -2,21 +2,26 @@ const { Node } = require('../models');
 const { Op } = require('sequelize');
 
 const colorPool = process.env.COLOR_POOL.split(',');
-console.log(colorPool)
+
 const getNextColor = (currentColorIndex) => {
   return colorPool[currentColorIndex % colorPool.length];
 };
 
 const createNode = async (nodeName, nodeType, parentId) => {
   let parent = null;
+
   if (parentId) {
     parent = await Node.findByPk(parentId);
     if (!parent) throw new Error('Parent node not found');
+
+    // Check for cycles when adding the new node
+    const cycleDetected =  await hasCycle(parent.nodeId, parentId)
+    if (cycleDetected) throw new Error('Adding this node would create a cycle');
   }
 
   const currentColorIndex = await Node.count({ where: { nodeType } });
   const nodeColor = getNextColor(currentColorIndex);
-//  console.log("nodecolot", nodeColor)
+
   const newNode = await Node.create({
     nodeName,
     nodeType,
@@ -29,6 +34,19 @@ const createNode = async (nodeName, nodeType, parentId) => {
   }
 
   return newNode;
+};
+
+
+const hasCycle = async (nodeId, parentId) => {
+  let current = await Node.findByPk(parentId);
+  while (current) {
+    // If current node is the same as the node we want to insert, we have a cycle.
+    if (current.nodeId === nodeId) {
+      return true;
+    }
+    current = await Node.findByPk(current.parentId);
+  }
+  return false;
 };
 
 const propagateColor = async (nodeId, color) => {
